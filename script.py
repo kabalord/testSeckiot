@@ -37,7 +37,7 @@ if __name__ == '__main__':
                     adresse.loc[i, "proxy"] = response_json['proxy']
                     adresse.loc[i, "hosting"] = response_json['hosting']
                     i = i+1
-                    time.sleep(3)
+                    time.sleep(1)
 
 # =============================================================================
 #AJOUT A LA BD
@@ -51,23 +51,22 @@ cursor = conn.cursor()
 
 #Creation table
 sql = """
-   DROP TABLE IF EXISTS ipv4;
-   CREATE TABLE IF NOT EXISTS ipv4 (
+      CREATE TABLE ipv4 (
       id int(11) NOT NULL AUTO_INCREMENT,
       ip varchar(100) NOT NULL,
       timezone varchar(100) DEFAULT NULL,
       mobile varchar(100) NOT NULL,
       proxy varchar(100) NOT NULL,
       hosting varchar(100) NOT NULL,
-      PRIMARY KEY (id),
-      UNIQUE KEY ip (ip)
+      PRIMARY KEY (id)
       );
 """
 cursor.execute(sql, multi=True)
+
 
 for a in range(0,adresse.shape[0]):
     donnee = (adresse.loc[a, "IPV4"],adresse.loc[a, "timezone"],
               adresse.loc[a, "mobile"],adresse.loc[a, "proxy"],adresse.loc[a, "hosting"])
     cursor.execute("""INSERT INTO ipv4 (ip, timezone, mobile, proxy, hosting) VALUES(%s, %s, %s, %s, %s)""", donnee)
-
+conn.commit()
 conn.close()
