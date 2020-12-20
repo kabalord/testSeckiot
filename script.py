@@ -51,7 +51,16 @@ cursor = conn.cursor()
 
 #Creation table
 sql = """
-      CREATE TABLE ipv4 (
+      CREATE TABLE IF NOT EXISTS calculs (
+      id int(11) NOT NULL AUTO_INCREMENT,
+      ip varchar(100) NOT NULL,
+      timezone varchar(100) DEFAULT NULL,
+      mobile varchar(100) NOT NULL,
+      proxy varchar(100) NOT NULL,
+      hosting varchar(100) NOT NULL,
+      PRIMARY KEY (id)
+      );
+      CREATE TABLE IF NOT EXISTS ipv4 (
       id int(11) NOT NULL AUTO_INCREMENT,
       ip varchar(100) NOT NULL,
       timezone varchar(100) DEFAULT NULL,
@@ -61,12 +70,22 @@ sql = """
       PRIMARY KEY (id)
       );
 """
-cursor.execute(sql, multi=True)
+#cursor.execute(sql)
+for r in cursor.execute(sql, multi=True):
+    pass
 
 
 for a in range(0,adresse.shape[0]):
     donnee = (adresse.loc[a, "IPV4"],adresse.loc[a, "timezone"],
               adresse.loc[a, "mobile"],adresse.loc[a, "proxy"],adresse.loc[a, "hosting"])
     cursor.execute("""INSERT INTO ipv4 (ip, timezone, mobile, proxy, hosting) VALUES(%s, %s, %s, %s, %s)""", donnee)
+    
+for b in range(0,adresse.shape[0]):
+    donnee = (adresse.loc[a, "IPV4"],adresse.loc[a, "timezone"],
+              adresse.loc[a, "mobile"],adresse.loc[a, "proxy"],adresse.loc[a, "hosting"])
+    cursor.execute("""INSERT INTO calculs (ip, timezone, mobile, proxy, hosting) VALUES(%s, %s, %s, %s, %s)""", donnee)
 conn.commit()
 conn.close()
+
+
+
